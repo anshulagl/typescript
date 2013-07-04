@@ -35,7 +35,10 @@ module TypeScript {
         public addPublicMember(key: string, data) { return this.dualMembers.primaryTable.add(key, data); }
 
         // add a private member 
-        public addPrivateMember(key: string, data) { return this.dualMembers.secondaryTable.add(key, data); }
+        public addPrivateMember(key: string, data) { 
+             console.log("addprivate member " + key + "  " + data);
+             return this.dualMembers.secondaryTable.add(key, data); 
+        }
     }
 
     export enum SymbolKind {

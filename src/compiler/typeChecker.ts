@@ -545,7 +545,7 @@ module TypeScript {
                 funcName = funcDecl.hint;
                 usedHint = true;
             }
-
+            
             if (groupType.symbol == null) {
                 groupType.symbol =
                     new TypeSymbol(funcName ? funcName : this.anon,

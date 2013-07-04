@@ -1,4 +1,4 @@
-﻿//﻿
+//﻿
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -124,6 +124,7 @@ module TypeScript {
         constructor(public checker: TypeChecker, public emittingFileName: string, public outfile: ITextWriter, public emitOptions: EmitOptions, public errorReporter: ErrorReporter) {
         }
 
+       
         public setSourceMappings(mapper: SourceMapper) {
             this.allSourceMappers.push(mapper);
             this.sourceMapper = mapper;
@@ -460,14 +461,14 @@ module TypeScript {
             }
             this.recordSourceMappingStart(funcDecl);
             if (!(funcDecl.isAccessor() && (<FieldSymbol>funcDecl.accessorSymbol).isObjectLitField)) {
-                this.writeToOutput("function ");
+                this.writeToOutput(" function ");
             }
             if (printName) {
                 var id = funcDecl.getNameText();
                 if (id && !funcDecl.isAccessor()) {
                     if (funcDecl.name) {
                         this.recordSourceMappingStart(funcDecl.name);
-                    }
+                    } 
                     this.writeToOutput(id);
                     if (funcDecl.name) {
                         this.recordSourceMappingEnd(funcDecl.name);
@@ -616,7 +617,6 @@ module TypeScript {
             }
 
             this.emitBareJavascriptStatements(funcDecl.bod, classPropertiesMustComeAfterSuperCall);
-
             this.indenter.decreaseIndent();
             this.emitIndent();
             this.recordSourceMappingStart(funcDecl.endingToken);
@@ -884,6 +884,12 @@ module TypeScript {
             this.writeToOutput(text);
         }
 
+
+        public changename(){
+
+        }
+
+
         public emitJavascriptFunction(funcDecl: FuncDecl) {
             if (hasFlag(funcDecl.fncFlags, FncFlags.Signature) || funcDecl.isOverload) {
                 return;
@@ -902,7 +908,7 @@ module TypeScript {
             var bases: ASTList = null;
             var hasSelfRef = false;
             var funcName = funcDecl.getNameText();
-
+            console.log("func name inside emitjsfun = " + funcName);
             if ((this.emitState.inObjectLiteral || !funcDecl.isAccessor()) &&
                 ((temp != EmitContainer.Constructor) ||
                 ((funcDecl.fncFlags & FncFlags.Method) == FncFlags.None))) {
@@ -1048,7 +1054,8 @@ module TypeScript {
                     }
                 }
                 this.recordSourceMappingStart(varDecl.id);
-                this.writeToOutput(varDecl.id.actualText);
+                console.log("this is var name " + varDecl.id.actualText);
+                this.writeToOutput(varDecl.getVarName());
                 this.recordSourceMappingEnd(varDecl.id);
                 if (hasInitializer) {
                     this.writeToOutputTrimmable(" = ");
@@ -1277,10 +1284,9 @@ module TypeScript {
             }
         }
 
-        public recordSourceMappingEnd(ast: ASTSpan) {
-            if (this.sourceMapper && isValidAstNode(ast)) {
-                // Pop source mapping childs
-                this.sourceMapper.currentMappings.pop();
+        public recordSourceMappingEnd(ast: ASTSpan) {     if
+        (this.sourceMapper && isValidAstNode(ast)) { // Pop source mapping
+        childs this.sourceMapper.currentMappings.pop();
 
                 // Get the last source mapping from sibling list = which is the one we are recording end for
                 var siblings = this.sourceMapper.currentMappings[this.sourceMapper.currentMappings.length - 1];
@@ -1330,9 +1336,10 @@ module TypeScript {
                         }
                     }
 
-                    // In some circumstances, class property initializers must be emitted immediately after the 'super' constructor
-                    // call which, in these cases, must be the first statement in the constructor body
-                    if (i == 1 && emitClassPropertiesAfterSuperCall) {
+                    // In some circumstances, class property initializers must
+be emitted immediately after the 'super' constructor                     // call
+which, in these cases, must be the first statement in the constructor body if (i
+== 1 && emitClassPropertiesAfterSuperCall) {
 
                         // emit any parameter properties first
                         var constructorDecl = (<ClassDeclaration>this.thisClassNode).constructorDecl;
@@ -1344,7 +1351,7 @@ module TypeScript {
                                 if ((arg.varFlags & VarFlags.Property) != VarFlags.None) {
                                     this.emitIndent();
                                     this.recordSourceMappingStart(arg);
-                                    this.recordSourceMappingStart(arg.id);
+                                    this.recordSourceMappingStart(arg.id);         
                                     this.writeToOutput("this." + arg.id.actualText);
                                     this.recordSourceMappingEnd(arg.id);
                                     this.writeToOutput(" = ");
@@ -1425,7 +1432,6 @@ module TypeScript {
                     this.emitIndent();
                 }
             }
-
             ast.emit(this, tokenId, startLine);
 
             if ((tokenId == TokenID.Semicolon) && (ast.nodeType < NodeType.GeneralNode)) {

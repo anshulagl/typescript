@@ -127,7 +127,7 @@ module TypeScript {
             }
             emitter.emitParensAndCommentsInPlace(this, false);
         }
-
+        
         public print(context: PrintContext) {
             context.startLine();
             var lineCol = { line: -1, col: -1 };
@@ -941,13 +941,20 @@ module TypeScript {
         public isAmbient() { return hasFlag(this.varFlags, VarFlags.Ambient); }
         public isExported() { return hasFlag(this.varFlags, VarFlags.Exported); }
         public isStatic() { return hasFlag(this.varFlags, VarFlags.Static); }
-
+        public isPrivate() {return hasFlag(this.varFlags, VarFlags.Private);}
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool) {
             emitter.emitJavascriptVarDecl(this, tokenId);
         }
 
         public treeViewLabel() {
             return "var " + this.id.actualText;
+        }
+
+        public getVarName(){
+            if(this.isPrivate()){
+                return "__" + this.id.actualText;
+            }
+            return this.id.actualText;
         }
     }
 
@@ -1083,11 +1090,21 @@ module TypeScript {
         }
 
         public getNameText() {
-            if (this.name) {
-                return this.name.actualText;
+            if(hasFlag(this.fncFlags, FncFlags.Private)){
+                if (this.name) {
+                    return "__" + this.name.actualText;
+                }
+                else {
+                    return "__" + this.hint;
+                }
             }
-            else {
-                return this.hint;
+            else{
+                if (this.name) {
+                    return this.name.actualText;
+                }
+                else {
+                    return this.hint;
+                }   
             }
         }
 
